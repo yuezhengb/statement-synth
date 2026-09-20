@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Good first issues](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/yuezhengb/statement-synth/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 
 Generate **synthetic bank-statement PDFs** for offline OCR / pipeline testing.
 
@@ -41,7 +42,9 @@ Every file is marked **SYNTHETIC / NOT A REAL STATEMENT** in the header and foot
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Good first issue: add another layout preset.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Good first issue: [Add a second synthetic statement layout preset](https://github.com/yuezhengb/statement-synth/issues/1).
 
 ## License
 
