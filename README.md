@@ -28,15 +28,17 @@ python -m venv .venv
 
 ```bash
 statement-synth --pages 2 --rows 12 --out sample-statement.pdf
+statement-synth --layout dense --pages 2 --rows 30 --out compact-statement.pdf
 ```
 
 | Flag | Default | Meaning |
 |---|---|---|
 | `--pages` | `1` | Number of pages |
 | `--rows` | `10` | Transactions per page |
-| `--seed` | `42` | RNG seed for reproducible fakes |
+| `--seed` | `42` | RNG seed for reproducible PDF output |
 | `--out` | `statement.pdf` | Output path |
 | `--bank-name` | `Example National Bank` | Header bank label |
+| `--layout` | `standard` | Layout preset: `standard` or more compact `dense` |
 
 Every file is marked **SYNTHETIC / NOT A REAL STATEMENT** in the header and footer.
 
