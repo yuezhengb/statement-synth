@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "statement-synth"
+version = "0.1.0"
+description = "Generate synthetic bank-statement PDFs for offline OCR testing"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+  "fpdf2>=2.7,<3",
+]
+
+[project.urls]
+Homepage = "https://github.com/yuezhengb/statement-synth"
+Issues = "https://github.com/yuezhengb/statement-synth/issues"
+
+[project.scripts]
+statement-synth = "statement_synth.cli:main"
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
