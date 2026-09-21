@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from fpdf import FPDF
@@ -60,32 +60,47 @@ def write_pdf(
     rows: int = 10,
     seed: int = 42,
     bank_name: str = "Example National Bank",
+    layout: str = "standard",
 ) -> Path:
+    if layout not in {"standard", "dense"}:
+        raise ValueError("layout must be 'standard' or 'dense'")
+
+    dense = layout == "dense"
+    title_size = 12 if dense else 14
+    title_height = 6 if dense else 8
+    detail_height = 5 if dense else 6
+    table_header_size = 8 if dense else 9
+    table_header_height = 6 if dense else 7
+    row_font_size = 7 if dense else 8
+    row_height = 5 if dense else 6
+
     txns = build_transactions(pages, rows, seed)
     pdf = FPDF(orientation="P", unit="mm", format="A4")
+    # Keep metadata stable so identical inputs produce identical PDFs.
+    pdf.set_creation_date(datetime(2026, 1, 1, tzinfo=timezone.utc))
     pdf.set_auto_page_break(auto=True, margin=15)
 
     for page_idx in range(pages):
         pdf.add_page()
-        pdf.set_font("Helvetica", "B", 14)
-        pdf.cell(0, 8, bank_name, new_x="LMARGIN", new_y="NEXT")
+        pdf.set_font("Helvetica", "B", title_size)
+        pdf.cell(0, title_height, bank_name, new_x="LMARGIN", new_y="NEXT")
         pdf.set_font("Helvetica", "B", 11)
         pdf.set_text_color(180, 0, 0)
         pdf.cell(0, 7, "SYNTHETIC / NOT A REAL STATEMENT", new_x="LMARGIN", new_y="NEXT")
         pdf.set_text_color(0, 0, 0)
         pdf.set_font("Helvetica", size=10)
-        pdf.cell(0, 6, "Account name: Alex Example", new_x="LMARGIN", new_y="NEXT")
-        pdf.cell(0, 6, "Account number: ****-****-1234", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(0, detail_height, "Account name: Alex Example", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(0, detail_height, "Account number: ****-****-1234", new_x="LMARGIN", new_y="NEXT")
         pdf.cell(
             0,
-            6,
+            detail_height,
             f"Statement seed: {seed}  |  Page {page_idx + 1}/{pages}",
             new_x="LMARGIN",
             new_y="NEXT",
         )
-        pdf.ln(3)
+        pdf.ln(2 if dense else 3)
 
-        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_font("Helvetica", "B", table_header_size)
         for label, width in [
             ("Date", 22),
             ("Description", 85),
@@ -93,17 +108,27 @@ def write_pdf(
             ("Credit", 25),
             ("Balance", 28),
         ]:
-            pdf.cell(width, 7, label, border=1)
+            pdf.cell(width, table_header_height, label, border=1)
         pdf.ln()
 
-        pdf.set_font("Helvetica", size=8)
+        pdf.set_font("Helvetica", size=row_font_size)
         chunk = txns[page_idx * rows : (page_idx + 1) * rows]
         for txn in chunk:
-            pdf.cell(22, 6, txn.day.isoformat(), border=1)
-            pdf.cell(85, 6, txn.description[:42], border=1)
-            pdf.cell(25, 6, _money(txn.debit) if txn.debit is not None else "", border=1)
-            pdf.cell(25, 6, _money(txn.credit) if txn.credit is not None else "", border=1)
-            pdf.cell(28, 6, _money(txn.balance), border=1)
+            pdf.cell(22, row_height, txn.day.isoformat(), border=1)
+            pdf.cell(85, row_height, txn.description[:42], border=1)
+            pdf.cell(
+                25,
+                row_height,
+                _money(txn.debit) if txn.debit is not None else "",
+                border=1,
+            )
+            pdf.cell(
+                25,
+                row_height,
+                _money(txn.credit) if txn.credit is not None else "",
+                border=1,
+            )
+            pdf.cell(28, row_height, _money(txn.balance), border=1)
             pdf.ln()
 
         pdf.set_y(-20)

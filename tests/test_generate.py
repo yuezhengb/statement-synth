@@ -15,3 +15,10 @@ def test_write_pdf(tmp_path: Path):
     out = write_pdf(tmp_path / "x.pdf", pages=1, rows=3, seed=1)
     assert out.exists()
     assert out.stat().st_size > 500
+
+
+def test_dense_layout_is_reproducible(tmp_path: Path):
+    first = write_pdf(tmp_path / "first.pdf", rows=5, seed=7, layout="dense")
+    second = write_pdf(tmp_path / "second.pdf", rows=5, seed=7, layout="dense")
+
+    assert first.read_bytes() == second.read_bytes()

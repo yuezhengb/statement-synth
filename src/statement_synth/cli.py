@@ -16,6 +16,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--out", type=Path, default=Path("statement.pdf"))
     parser.add_argument("--bank-name", default="Example National Bank")
+    parser.add_argument(
+        "--layout",
+        choices=("standard", "dense"),
+        default="standard",
+        help="PDF layout preset (default: standard)",
+    )
     args = parser.parse_args(argv)
 
     if args.pages < 1 or args.rows < 1:
@@ -27,6 +33,7 @@ def main(argv: list[str] | None = None) -> int:
         rows=args.rows,
         seed=args.seed,
         bank_name=args.bank_name,
+        layout=args.layout,
     )
     print(f"Wrote {out.resolve()}")
     return 0
