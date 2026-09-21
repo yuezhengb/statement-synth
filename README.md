@@ -46,7 +46,7 @@ Every file is marked **SYNTHETIC / NOT A REAL STATEMENT** in the header and foot
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Good first issue: [Add a second synthetic statement layout preset](https://github.com/yuezhengb/statement-synth/issues/1).
+Layouts `standard` and `dense` are in; open issues welcome for more presets, CI, or BankOCR fixture wiring.
 
 ## License
 
